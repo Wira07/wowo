@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#D7000F">
+  <meta name="description" content="Game puzzle merge: satukan item yang sama sampai terbentuk logo KOPDES Merah Putih.">
+  <title>Merge KOPDES Merah Putih</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="app">
+    <!-- HUD: skor, rekor, preview item berikutnya, pause, mute -->
+    <header id="hud">
+      <div class="stat"><span class="lbl">SKOR</span><span class="val" id="score">0</span></div>
+      <div class="stat"><span class="lbl">REKOR</span><span class="val" id="best">0</span></div>
+      <div class="next">
+        <span class="lbl">BERIKUTNYA</span>
+        <div class="nextbox"><img id="nextImg" alt="Item berikutnya"></div>
+      </div>
+      <button class="icon-btn" id="btnPause" aria-label="Jeda" title="Jeda (P)"></button>
+      <button class="icon-btn" id="btnMute" aria-label="Suara" title="Suara (M)"></button>
+    </header>
+
+    <!-- Panel Evolusi -->
+    <nav id="evo" aria-label="Panel evolusi"></nav>
+
+    <!-- Area permainan -->
+    <main id="board">
+      <canvas id="game" width="480" height="720" aria-label="Area permainan"></canvas>
+      <div id="hint" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <!-- Splash / Menu Utama -->
+  <section id="menu" class="overlay full show" aria-label="Menu utama">
+    <div class="menu-card">
+      <div class="logo-wrap"><img src="assets/lvl6.png" alt="Logo KOPDES Merah Putih"></div>
+      <h1>MERGE<small>KOPDES MERAH PUTIH</small></h1>
+      <p class="tag">Satukan yang sama, raih logo KOPDES!</p>
+      <div class="best-line">Rekor: <b id="menuBest">0</b></div>
+      <button class="btn primary big" id="btnPlay">MAIN</button>
+      <button class="btn" id="btnHow">Cara Bermain</button>
+      <button class="btn ghost" id="btnMenuMute">Suara: Hidup</button>
+    </div>
+  </section>
+
+  <!-- Cara Bermain / Tutorial -->
+  <section id="how" class="overlay full" aria-label="Cara bermain">
+    <div class="card">
+      <h2>Cara Bermain</h2>
+      <ol class="steps">
+        <li><b>Geser</b> jari / mouse untuk mengatur posisi, <b>lepas</b> (tap / klik) untuk menjatuhkan item.<br>
+            <small>Desktop: panah kiri/kanan + spasi.</small></li>
+        <li>Dua item <b>yang sama</b> yang bersentuhan akan <b>menyatu</b> jadi level berikutnya.
+          <div class="demo" id="howDemo"></div></li>
+        <li>Rantai evolusi sampai <b>logo KOPDES Merah Putih</b>:
+          <div class="chain" id="howChain"></div></li>
+        <li>Jangan biarkan item diam di atas <b>garis batas</b> lebih dari <b>2 detik</b>, atau permainan berakhir!</li>
+        <li>Merge beruntun &lt; 1 detik memberi <b>combo</b> ×1.5, ×2, ×3.</li>
+      </ol>
+      <button class="btn primary big" id="btnHowOk">Mengerti, Main!</button>
+    </div>
+  </section>
+
+  <!-- Pause -->
+  <section id="pause" class="overlay" aria-label="Jeda">
+    <div class="card">
+      <h2>Jeda</h2>
+      <button class="btn primary big" id="btnResume">Lanjutkan</button>
+      <button class="btn" id="btnRestart">Ulangi</button>
+      <button class="btn ghost" id="btnPauseMenu">Menu Utama</button>
+    </div>
+  </section>
+
+  <!-- Game Over -->
+  <section id="over" class="overlay" aria-label="Game over">
+    <div class="card">
+      <h2>GAME OVER</h2>
+      <div class="big-score" id="ovScore">0</div>
+      <div class="badge" id="ovRecord" hidden>REKOR BARU!</div>
+      <div class="row"><span>Rekor</span><b id="ovBest">0</b></div>
+      <div class="row"><span>Level tertinggi</span>
+        <b class="lvl"><img id="ovLvlImg" alt=""><span id="ovLvlName"></span></b></div>
+      <h3>Peringkat Lokal</h3>
+      <ol id="ovBoard" class="board-list"></ol>
+      <button class="btn primary big" id="btnAgain">Main Lagi</button>
+      <div class="btn-row">
+        <button class="btn" id="btnShare">Bagikan</button>
+        <button class="btn ghost" id="btnOverMenu">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Layar Selebrasi -->
+  <section id="win" class="overlay" aria-label="Selamat">
+    <canvas id="confetti"></canvas>
+    <div class="card win-card">
+      <div class="logo-wrap small"><img src="assets/lvl6.png" alt="Logo KOPDES Merah Putih"></div>
+      <h2>SELAMAT!</h2>
+      <p>Kamu berhasil membentuk logo <b>KOPDES Merah Putih</b>!</p>
+      <p class="edu">Koperasi Desa/Kelurahan Merah Putih: dari warga, oleh warga, untuk kesejahteraan bersama.</p>
+      <button class="btn primary big" id="btnContinue">Lanjutkan Bermain</button>
+    </div>
+  </section>
+
+  <div id="toast" role="status"></div>
+
+  <script src="vendor/matter.min.js"></script>
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
+
