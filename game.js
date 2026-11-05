@@ -1,5 +1,5 @@
 /* Merge KOPDES Merah Putih — game.js
- * Canvas 2D + Matter.js. Semua konfigurasi level ada di objek LEVELS. */
+ * Canvas 2D + Matter.js. Mendukung 2 Mode Permainan (Game 1 & Game 2). */
 (() => {
   'use strict';
 
@@ -9,20 +9,33 @@
    * Konfigurasi
    * ===================================================================== */
   // score = poin saat merge menghasilkan level tersebut. `fit` = skala gambar thd collider.
-  const LEVELS = [
-    { id: 1, name: 'Orang Kurus',  img: 'assets/lvl1.png', radius: 28,  score: 0,   bubble: '#cfe3f7', fit: 1.10 },
-    { id: 2, name: 'Orang Ke-2',   img: 'assets/lvl2.png', radius: 38,  score: 10,  bubble: '#bcd4f0', fit: 1.10 },
-    { id: 3, name: 'Sawit',        img: 'assets/lvl3.png', radius: 50,  score: 25,  bubble: '#ffd9a8', fit: 1.14 },
-    { id: 4, name: 'Orang Berjas', img: 'assets/lvl4.png', radius: 64,  score: 50,  bubble: '#d3d6de', fit: 1.10 },
-    { id: 5, name: 'Makanan',      img: 'assets/lvl5.png', radius: 80,  score: 100, bubble: '#ffe8a8', fit: 1.10 },
-    { id: 6, name: 'Logo Kopdes',  img: 'assets/lvl6.png', radius: 100, score: 250, bubble: '#ffffff', fit: 1.04 },
-  ];
-  const MAX_LEVEL = LEVELS.length;
+  const LEVELS_BY_MODE = {
+    1: [
+      { id: 1, name: 'Orang Kurus',  img: 'assets/lvl1.png', radius: 28,  score: 0,   bubble: '#cfe3f7', fit: 1.10 },
+      { id: 2, name: 'Orang Ke-2',   img: 'assets/lvl2.png', radius: 38,  score: 10,  bubble: '#bcd4f0', fit: 1.10 },
+      { id: 3, name: 'Sawit',        img: 'assets/lvl3.png', radius: 50,  score: 25,  bubble: '#ffd9a8', fit: 1.14 },
+      { id: 4, name: 'Orang Berjas', img: 'assets/lvl4.png', radius: 64,  score: 50,  bubble: '#d3d6de', fit: 1.10 },
+      { id: 5, name: 'Makanan',      img: 'assets/lvl5.png', radius: 80,  score: 100, bubble: '#ffe8a8', fit: 1.10 },
+      { id: 6, name: 'Logo Kopdes',  img: 'assets/lvl6.png', radius: 100, score: 250, bubble: '#ffffff', fit: 1.04 },
+    ],
+    2: [
+      { id: 1, name: 'Pak Jas Biru',     img: 'assets/m2_lvl1.png', radius: 28,  score: 0,   bubble: '#d2e4fa', fit: 1.12 },
+      { id: 2, name: 'Pak Kemeja Putih', img: 'assets/m2_lvl2.png', radius: 38,  score: 10,  bubble: '#e4f0fb', fit: 1.14 },
+      { id: 3, name: 'Pak Rambut Acak',  img: 'assets/m2_lvl3.png', radius: 50,  score: 25,  bubble: '#cfd9ec', fit: 1.12 },
+      { id: 4, name: 'Ibu Baju Merah',   img: 'assets/m2_lvl4.png', radius: 64,  score: 50,  bubble: '#fbd6d8', fit: 1.12 },
+      { id: 5, name: 'Ibu Kebaya Merah', img: 'assets/m2_lvl5.png', radius: 80,  score: 100, bubble: '#ffe0e2', fit: 1.12 },
+      { id: 6, name: 'Logo Kopdes',      img: 'assets/lvl6.png',    radius: 100, score: 250, bubble: '#ffffff', fit: 1.04 },
+    ],
+  };
+
+  let gameMode = 1;
+  let LEVELS = LEVELS_BY_MODE[1];
+  const MAX_LEVEL = 6;
   const LOGO_PAIR_BONUS = 1000;
   const COMBO_WINDOW = 1.0;                 // detik
   const COMBO_MULT = [1, 1.5, 2, 3];        // merge ke-1, ke-2, ke-3, ke-4+ dalam rantai
-  const SPAWN_LV1_CHANCE = 0.7;             // sisanya Level 2
-  const GUARANTEED_LV1 = 3;                 // 3 item pertama selalu Level 1
+  const SPAWN_LV1_CHANCE = 0.7;             // sisanya Level 2 (Mode 1)
+  const GUARANTEED_LV1 = 3;                 // 3 item pertama selalu Level 1 (Mode 1)
   const OVER_SECONDS = 2.0;
   const REST_SPEED = 1.0;                   // px/step; di bawah ini dianggap "diam"
   const DROP_COOLDOWN = 0.45;
@@ -68,7 +81,12 @@
   /* =====================================================================
    * Aset gambar
    * ===================================================================== */
-  LEVELS.forEach((L) => { L.image = new Image(); L.image.src = L.img; });
+  Object.keys(LEVELS_BY_MODE).forEach((m) => {
+    LEVELS_BY_MODE[m].forEach((L) => {
+      L.image = new Image();
+      L.image.src = L.img;
+    });
+  });
 
   /* =====================================================================
    * State
@@ -104,6 +122,30 @@
   const texts = [];
   const rings = [];
   let nowSec = 0;
+
+  /* =====================================================================
+   * Pilihan Mode (Game 1 vs Game 2)
+   * ===================================================================== */
+  function selectMode(m) {
+    gameMode = m === 2 ? 2 : 1;
+    LEVELS = LEVELS_BY_MODE[gameMode];
+    Sfx.setMode(gameMode);
+    store.set('kopdes_mode', gameMode);
+
+    const b1 = $('btnMode1'), b2 = $('btnMode2');
+    if (b1 && b2) {
+      b1.classList.toggle('active', gameMode === 1);
+      b2.classList.toggle('active', gameMode === 2);
+      b1.setAttribute('aria-checked', String(gameMode === 1));
+      b2.setAttribute('aria-checked', String(gameMode === 2));
+    }
+    const playBtn = $('btnPlay');
+    if (playBtn) playBtn.textContent = 'MAIN GAME ' + gameMode;
+
+    buildEvo();
+    buildHow();
+    if (el.nextImg) el.nextImg.src = LEVELS[0].img;
+  }
 
   /* =====================================================================
    * Fisika
@@ -169,6 +211,17 @@
    * ===================================================================== */
   function rollLevel() {
     const i = spawnIndex++;
+    if (gameMode === 2) {
+      // Di Game 2:
+      // 4 item pertama adalah Level 1 (Pak Jas Biru) agar 2 pasang bisa langsung menyatu -> Level 2 -> Level 3,
+      // diikuti 2 item Level 4 (Ibu Baju Merah) agar bisa langsung menyatu -> Level 5 (Ibu Kebaya Merah).
+      if (i < 4) return 1;
+      if (i === 4 || i === 5) return 4;
+      const r = Math.random();
+      if (r < 0.55) return 1;
+      if (r < 0.75) return 2;
+      return 4;
+    }
     if (i < GUARANTEED_LV1) return 1;
     return Math.random() < SPAWN_LV1_CHANCE ? 1 : 2;
   }
@@ -354,6 +407,7 @@
 
   function startGame() {
     Sfx.init();
+    Sfx.setMode(gameMode);
     hideAll();
     resetGame();
     state = 'playing';
@@ -376,6 +430,7 @@
   }
 
   function openHow(first) {
+    buildHow();
     $('btnHowOk').textContent = first ? 'Mengerti, Main!' : 'Tutup';
     showOverlay(el.how);
   }
@@ -427,7 +482,7 @@
 
   async function shareScore() {
     const L = LEVELS[maxLevel - 1];
-    const text = 'Skorku ' + fmt(score) + ' di game Merge KOPDES Merah Putih! Level tertinggi: ' + L.name + '. Bisa kalahkan aku?';
+    const text = 'Skorku ' + fmt(score) + ' di game Merge KOPDES Merah Putih (Game ' + gameMode + ')! Level tertinggi: ' + L.name + '. Bisa kalahkan aku?';
     const url = location.href.split('?')[0].split('#')[0];
     if (navigator.share) {
       try { await navigator.share({ title: 'Merge KOPDES Merah Putih', text, url }); return; }
@@ -499,7 +554,7 @@
     }
     for (let i = rings.length - 1; i >= 0; i--) { rings[i].t += dt / 0.45; if (rings[i].t >= 1) rings.splice(i, 1); }
     for (let i = texts.length - 1; i >= 0; i--) { texts[i].t += dt / 0.9; if (texts[i].t >= 1) texts.splice(i, 1); }
-    shake *= Math.pow(0.001, dt);       // meluruh cepat
+    shake *= Math.pow(0.001, dt);
     if (shake < 0.2) shake = 0;
   }
 
@@ -545,7 +600,6 @@
       ctx.rotate(tilt);
       ctx.drawImage(img, -w / 2, -h / 2, w, h);
     } else {
-      // placeholder bila aset gagal dimuat
       ctx.fillStyle = RED; ctx.font = 'bold ' + r + 'px sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(level), 0, 0);
     }
@@ -562,16 +616,12 @@
   }
 
   function drawBackground() {
-    // latar
     ctx.fillStyle = '#fff5f3'; ctx.fillRect(0, 0, W, H);
-    // zona jatuh (di atas garis)
     const zg = ctx.createLinearGradient(0, 0, 0, LINE_Y);
     zg.addColorStop(0, '#ffe3e1'); zg.addColorStop(1, '#fff0ee');
     ctx.fillStyle = zg; ctx.fillRect(LEFT, 0, RIGHT - LEFT, LINE_Y);
-    // pola garis tipis di area bermain
     ctx.strokeStyle = 'rgba(215,0,15,.05)'; ctx.lineWidth = 2;
     for (let y = LINE_Y + 30; y < FLOOR_Y; y += 60) { ctx.beginPath(); ctx.moveTo(LEFT, y); ctx.lineTo(RIGHT, y); ctx.stroke(); }
-    // dinding & lantai merah
     const wg = ctx.createLinearGradient(0, 0, WALL, 0);
     wg.addColorStop(0, '#9b000a'); wg.addColorStop(1, '#e2101d');
     ctx.fillStyle = wg; ctx.fillRect(0, 0, WALL, H);
@@ -676,7 +726,6 @@
       if (held) aimX = clampAim(aimX);
       if (dropCd > 0) { dropCd -= dt; if (dropCd <= 0 && !held) spawnHeld(); }
     } else if (state === 'celebrating') {
-      // fisika dibekukan, efek tetap berjalan
       winDelay -= dt;
       if (winDelay <= 0) { state = 'celebrating-shown'; showWin(); }
     } else if (state === 'gameover') {
@@ -763,6 +812,8 @@
   document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
 
   /* tombol */
+  $('btnMode1').onclick = () => { Sfx.init(); Sfx.click(); selectMode(1); };
+  $('btnMode2').onclick = () => { Sfx.init(); Sfx.click(); selectMode(2); };
   $('btnPlay').onclick = onPlayPressed;
   $('btnHow').onclick = () => { Sfx.init(); Sfx.click(); afterHowto = null; openHow(false); };
   $('btnHowOk').onclick = closeHow;
@@ -784,10 +835,8 @@
     setMuted(store.get('kopdes_muted', false));
     el.best.textContent = fmt(best);
     $('menuBest').textContent = fmt(best);
-    buildEvo();
-    buildHow();
+    selectMode(store.get('kopdes_mode', 1));
     setPauseIcon();
-    el.nextImg.src = LEVELS[0].img;
     resizeCanvas();
     requestAnimationFrame(frame);
     if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
@@ -799,11 +848,14 @@
   // Hook untuk pengujian otomatis (hanya aktif dengan ?debug)
   if (/[?&]debug\b/.test(location.search)) {
     window.__game = {
-      LEVELS, LINE_Y, FLOOR_Y, LEFT, RIGHT, DROP_Y, engine,
+      get LEVELS() { return LEVELS; },
+      LEVELS_BY_MODE, LINE_Y, FLOOR_Y, LEFT, RIGHT, DROP_Y, engine,
+      get mode() { return gameMode; },
       get state() { return state; }, get score() { return score; }, get best() { return best; },
       get items() { return items; }, get held() { return held; }, get next() { return nextLevel; },
       get dangerTime() { return dangerTime; }, get won() { return won; }, get maxLevel() { return maxLevel; },
-      start: startGame, drop, setAim(x) { aimX = x; },
+      selectMode, start: startGame, drop,
+      setAim(x) { aimX = x; },
       add(level, x, y) { return addItem(level, x, y, false); },
       step(n) { for (let i = 0; i < (n || 1); i++) stepSim(); },
       clear() { items.slice().forEach(removeItem); },
@@ -811,5 +863,3 @@
     };
   }
 })();
-
-

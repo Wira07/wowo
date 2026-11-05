@@ -119,10 +119,13 @@ img { -webkit-user-drag: none; user-drag: none; }
   background: rgba(43, 10, 13, .85);
   color: #fff;
   border-radius: 999px;
-  font-size: 14px; font-weight: 600;
+  font-size: 13px; font-weight: 600;
   pointer-events: none;
   opacity: 0; transition: opacity .3s;
   white-space: nowrap;
+  max-width: 94%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #hint.show { opacity: 1; }
 
@@ -144,9 +147,9 @@ img { -webkit-user-drag: none; user-drag: none; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .card, .menu-card {
-  width: 100%; max-width: 380px; max-height: 100%;
+  width: 100%; max-width: 400px; max-height: 100%;
   overflow: auto;
-  padding: 20px;
+  padding: 18px;
   border-radius: 22px;
   text-align: center;
   background: #fff;
@@ -158,44 +161,122 @@ img { -webkit-user-drag: none; user-drag: none; }
 .card h2 { margin: 0 0 10px; color: var(--red); font-size: 26px; letter-spacing: .03em; }
 .card h3 { margin: 14px 0 6px; font-size: 13px; color: var(--red-dark); letter-spacing: .06em; text-transform: uppercase; }
 
-.menu-card { background: transparent; box-shadow: none; color: #fff; display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.menu-card { background: transparent; box-shadow: none; color: #fff; display: flex; flex-direction: column; align-items: stretch; gap: 9px; }
 .logo-wrap {
   align-self: center;
-  width: min(72vw, 280px);
+  width: min(56vw, 200px);
   background: #fff;
-  border-radius: 24px;
-  padding: 14px 18px;
+  border-radius: 20px;
+  padding: 10px 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
 }
 .logo-wrap.small { width: 190px; padding: 8px 12px; margin: 0 auto 8px; box-shadow: 0 4px 14px rgba(0, 0, 0, .2); border: 2px solid #fdeaea; }
 .logo-wrap img { width: 100%; display: block; }
-.menu-card h1 { margin: 8px 0 0; font-size: 40px; letter-spacing: .06em; line-height: 1; font-weight: 900; text-shadow: 0 3px 0 rgba(0, 0, 0, .3); }
-.menu-card h1 small { display: block; margin-top: 6px; font-size: 15px; letter-spacing: .14em; font-weight: 700; color: #ffe0e0; }
-.tag { margin: 0; opacity: .9; }
+.menu-card h1 { margin: 4px 0 0; font-size: 34px; letter-spacing: .06em; line-height: 1; font-weight: 900; text-shadow: 0 3px 0 rgba(0, 0, 0, .3); }
+.menu-card h1 small { display: block; margin-top: 4px; font-size: 14px; letter-spacing: .14em; font-weight: 700; color: #ffe0e0; }
+.tag { margin: 0; font-size: 14px; opacity: .92; }
 .best-line { font-size: 15px; }
 .best-line b { color: var(--gold); font-size: 20px; }
 
+/* ---------- Pilihan 2 Game ---------- */
+.mode-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 2px 0;
+}
+.mode-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 8px;
+  border-radius: 16px;
+  border: 2.5px solid rgba(255, 255, 255, .35);
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+  text-align: center;
+  transition: transform .12s, background .15s, border-color .15s, box-shadow .15s;
+}
+.mode-card:hover { background: rgba(255, 255, 255, .2); }
+.mode-card.active {
+  background: #ffffff;
+  color: var(--ink);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(255, 213, 74, .45), 0 8px 20px rgba(0, 0, 0, .3);
+  transform: translateY(-2px);
+}
+.mode-badge {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .28);
+  color: #fff;
+}
+.mode-card.active .mode-badge {
+  background: var(--red);
+  color: #fff;
+}
+.mode-thumbs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, .92);
+  border-radius: 12px;
+  padding: 4px 6px;
+  width: 100%;
+}
+.mode-card.active .mode-thumbs {
+  background: #fdeaea;
+}
+.mode-thumbs img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+.mode-arr {
+  font-weight: 900;
+  font-size: 13px;
+  color: var(--red);
+  opacity: .75;
+}
+.mode-title {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.mode-card.active .mode-title { color: var(--red); }
+.mode-desc {
+  font-size: 11px;
+  line-height: 1.25;
+  opacity: .85;
+}
+
 .btn {
-  min-height: 48px; min-width: 44px;
-  padding: 10px 18px;
+  min-height: 46px; min-width: 44px;
+  padding: 10px 16px;
   border: 2px solid var(--red);
   border-radius: 14px;
   background: #fff;
   color: var(--red);
-  font-weight: 800; font-size: 16px;
+  font-weight: 800; font-size: 15px;
   box-shadow: 0 3px 0 rgba(0, 0, 0, .18);
   transition: transform .08s;
 }
 .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0, 0, 0, .18); }
 .btn.primary { background: linear-gradient(#f0202d, var(--red)); color: #fff; border-color: var(--red-dark); }
-.btn.big { min-height: 54px; font-size: 20px; letter-spacing: .05em; }
+.btn.big { min-height: 52px; font-size: 19px; letter-spacing: .05em; }
 .btn.ghost { background: transparent; box-shadow: none; }
-.menu-card .btn { border-color: #fff; }
+.menu-card .btn { border-color: #fff; flex: 1; }
 .menu-card .btn:not(.primary) { background: rgba(255, 255, 255, .12); color: #fff; }
-.menu-card .btn.primary { background: #fff; color: var(--red); border-color: #fff; }
+.menu-card .btn.primary { background: #fff; color: var(--red); border-color: #fff; flex: none; }
 .card .btn { width: 100%; margin-top: 8px; }
 .btn-row { display: flex; gap: 8px; }
-.btn:focus-visible, .icon-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.btn:focus-visible, .icon-btn:focus-visible, .mode-card:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 /* Cara bermain */
 .steps { text-align: left; margin: 0 0 6px; padding-left: 22px; font-size: 15px; line-height: 1.4; }
@@ -235,13 +316,13 @@ img { -webkit-user-drag: none; user-drag: none; }
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-@media (max-height: 560px) {
-  .menu-card h1 { font-size: 30px; }
-  .logo-wrap { width: 160px; padding: 8px 12px; }
-  .menu-card { gap: 6px; }
+@media (max-height: 620px) {
+  .menu-card h1 { font-size: 26px; }
+  .logo-wrap { width: 130px; padding: 6px 10px; }
+  .menu-card { gap: 5px; padding: 12px; }
+  .mode-thumbs img { width: 28px; height: 28px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .01ms !important; }
 }
-

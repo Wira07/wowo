@@ -41,11 +41,43 @@
     <div class="menu-card">
       <div class="logo-wrap"><img src="assets/lvl6.png" alt="Logo KOPDES Merah Putih"></div>
       <h1>MERGE<small>KOPDES MERAH PUTIH</small></h1>
-      <p class="tag">Satukan yang sama, raih logo KOPDES!</p>
+      <p class="tag" id="menuTag">Pilih 1 dari 2 mode permainan di bawah:</p>
+
+      <!-- Pilihan 2 Game -->
+      <div class="mode-picker" role="radiogroup" aria-label="Pilih permainan">
+        <button type="button" class="mode-card active" id="btnMode1" data-mode="1" role="radio" aria-checked="true">
+          <span class="mode-badge">GAME 1</span>
+          <div class="mode-thumbs">
+            <img src="assets/lvl1.png" alt="Orang Kurus">
+            <span class="mode-arr">›</span>
+            <img src="assets/lvl2.png" alt="Orang Ke-2">
+            <span class="mode-arr">›</span>
+            <img src="assets/lvl3.png" alt="Sawit">
+          </div>
+          <strong class="mode-title">Mode KOPDES 1</strong>
+          <small class="mode-desc">Game 1 tetap seperti semula</small>
+        </button>
+
+        <button type="button" class="mode-card" id="btnMode2" data-mode="2" role="radio" aria-checked="false">
+          <span class="mode-badge">GAME 2</span>
+          <div class="mode-thumbs">
+            <img src="assets/m2_lvl1.png" alt="Pak Jas Biru">
+            <span class="mode-arr">›</span>
+            <img src="assets/m2_lvl2.png" alt="Pak Kemeja Putih">
+            <span class="mode-arr">›</span>
+            <img src="assets/m2_lvl4.png" alt="Ibu Baju Merah">
+          </div>
+          <strong class="mode-title">Mode Spesial 2</strong>
+          <small class="mode-desc">Jatuhkan &amp; satukan karakter yang sama</small>
+        </button>
+      </div>
+
       <div class="best-line">Rekor: <b id="menuBest">0</b></div>
-      <button class="btn primary big" id="btnPlay">MAIN</button>
-      <button class="btn" id="btnHow">Cara Bermain</button>
-      <button class="btn ghost" id="btnMenuMute">Suara: Hidup</button>
+      <button class="btn primary big" id="btnPlay">MAIN GAME 1</button>
+      <div class="btn-row">
+        <button class="btn" id="btnHow">Cara Bermain</button>
+        <button class="btn ghost" id="btnMenuMute">Suara: Hidup</button>
+      </div>
     </div>
   </section>
 
@@ -54,9 +86,9 @@
     <div class="card">
       <h2>Cara Bermain</h2>
       <ol class="steps">
-        <li><b>Geser</b> jari / mouse untuk mengatur posisi, <b>lepas</b> (tap / klik) untuk menjatuhkan item.<br>
+        <li id="howStep1"><b>Geser</b> jari / mouse untuk mengatur posisi, <b>lepas</b> (tap / klik) untuk menjatuhkan item.<br>
             <small>Desktop: panah kiri/kanan + spasi.</small></li>
-        <li>Dua item <b>yang sama</b> yang bersentuhan akan <b>menyatu</b> jadi level berikutnya.
+        <li id="howStep2">Saat dua item <b>yang sama</b> jatuh dan <b>bertemu</b>, keduanya berubah jadi level berikutnya beserta suaranya!
           <div class="demo" id="howDemo"></div></li>
         <li>Rantai evolusi sampai <b>logo KOPDES Merah Putih</b>:
           <div class="chain" id="howChain"></div></li>
@@ -115,4 +147,3 @@
   <script src="game.js"></script>
 </body>
 </html>
-

@@ -3,15 +3,26 @@ const Sfx = (() => {
   'use strict';
   let ctx = null, master = null, sfxBus = null, voiceBus = null, musicBus = null;
   let muted = false, musicOn = false, timer = null, nextNoteTime = 0, stepIdx = 0;
+  let currentMode = 1;
 
-  // Pemetaan level hasil merge (nl) ke file audio:
-  // Level 1 + Level 1 -> Level 2 (Orang Kurus bertemu Orang Kurus)
-  // Level 2 + Level 2 -> Level 3 (Orang Ke-2 / Gendut bertemu Orang Ke-2)
-  // Level 3 + Level 3 -> Level 4 (Sawit bertemu Sawit)
+  // Pemetaan mode & level hasil merge ke file audio:
+  // Mode 1:
+  //   m1_2: Level 1 + Level 1 -> Level 2 (Orang Kurus bertemu Orang Kurus)
+  //   m1_3: Level 2 + Level 2 -> Level 3 (Orang Ke-2 / Gendut bertemu Orang Ke-2)
+  //   m1_4: Level 3 + Level 3 -> Level 4 (Sawit bertemu Sawit)
+  // Mode 2:
+  //   m2_2: Level 1 + Level 1 -> Level 2 (Pak Jas Biru bertemu Pak Jas Biru -> Pak Kemeja Putih, SnapTik 7153243234121174298)
+  //   m2_3: Level 2 + Level 2 -> Level 3 (Pak Kemeja Putih bertemu Pak Kemeja Putih -> Pak Rambut Acak, SnapTik 7440518047376379191)
+  //   m2_4: Level 3 + Level 3 -> Level 4 (Pak Rambut Acak bertemu Pak Rambut Acak -> Ibu Baju Merah, SnapTik 7299897033614167302)
+  //   m2_5: Level 4 + Level 4 -> Level 5 (Ibu Baju Merah bertemu Ibu Baju Merah -> Ibu Kebaya Merah, SnapTik 7299897033614167302)
   const VOICE_FILES = {
-    2: 'assets/merge_lvl1.wav',
-    3: 'assets/merge_lvl2.wav',
-    4: 'assets/merge_lvl3.wav',
+    m1_2: 'assets/merge_lvl1.wav',
+    m1_3: 'assets/merge_lvl2.wav',
+    m1_4: 'assets/merge_lvl3.wav',
+    m2_2: 'assets/m2_merge1.wav',
+    m2_3: 'assets/m2_merge2.wav',
+    m2_4: 'assets/m2_merge3.wav',
+    m2_5: 'assets/m2_merge3.wav',
   };
   const voiceBuffers = {};
   const voiceElements = {};
@@ -64,6 +75,10 @@ const Sfx = (() => {
     if (musicOn) startScheduler();
   }
 
+  function setMode(m) {
+    currentMode = m === 2 ? 2 : 1;
+  }
+
   function tone(freq, { type = 'sine', dur = 0.15, vol = 0.3, delay = 0, slideTo = null, bus = null } = {}) {
     if (!ctx) return;
     const t0 = ctx.currentTime + delay;
@@ -102,7 +117,7 @@ const Sfx = (() => {
   }
 
   function playVoice(level) {
-    const key = String(level);
+    const key = 'm' + currentMode + '_' + String(level);
     if (!VOICE_FILES[key]) return false;
     init();
     stopVoice();
@@ -112,7 +127,8 @@ const Sfx = (() => {
       const buf = voiceBuffers[key];
       const src = ctx.createBufferSource();
       src.buffer = buf;
-      src._level = Number(key);
+      src._level = Number(level);
+      src._key = key;
       src.connect(voiceBus);
       activeSource = src;
       duckMusic(buf.duration);
@@ -136,7 +152,8 @@ const Sfx = (() => {
         el.currentTime = 0;
         el.muted = muted;
         el.volume = 1.0;
-        el._level = Number(key);
+        el._level = Number(level);
+        el._key = key;
         activeElement = el;
         duckMusic(el.duration || 3.5);
         el.onended = () => {
@@ -164,14 +181,13 @@ const Sfx = (() => {
   /* ---------- Musik latar ---------- */
   const TEMPO = 104;                         // bpm
   const STEP = 60 / TEMPO / 2;               // durasi satu not 1/8
-  // indeks SCALE per langkah (-1 = jeda); 4 bar × 8 langkah
   const MELODY = [
     5, -1, 7, 8, 7, -1, 5, -1,
     4, -1, 5, 7, 5, -1, 3, -1,
     5, -1, 7, 9, 8, 7, 5, -1,
     7, 5, 4, -1, 3, -1, -1, -1,
   ];
-  const BASS = [0, 0, 3, 4]; // per bar (indeks SCALE rendah)
+  const BASS = [0, 0, 3, 4];
 
   function scheduleNotes() {
     if (!ctx) return;
@@ -209,7 +225,7 @@ const Sfx = (() => {
   function drop() { tone(220, { type: 'sine', dur: 0.14, vol: 0.5, slideTo: 90 }); }
   function click() { tone(660, { type: 'square', dur: 0.05, vol: 0.12 }); }
   function merge(level) {
-    // Jika level hasil merge memiliki klip suara (2, 3, 4), putar klip suara tersebut
+    // Jika level hasil merge memiliki klip suara, putar klip suara tersebut
     if (playVoice(level)) return;
     // Selain itu, gunakan nada naik sesuai level hasil merge (5..6)
     const base = Math.min(level, 7) + 1;
@@ -239,12 +255,18 @@ const Sfx = (() => {
   });
 
   return {
-    init, setMuted, isMuted: () => muted,
+    init, setMode, getMode: () => currentMode,
+    setMuted, isMuted: () => muted,
     musicStart, musicStop, stopVoice,
     drop, click, merge, combo, gameOver, win,
     getActiveVoiceLevel: () => {
       if (activeSource && activeSource._level) return activeSource._level;
       if (activeElement && activeElement._level) return activeElement._level;
+      return null;
+    },
+    getActiveVoiceKey: () => {
+      if (activeSource && activeSource._key) return activeSource._key;
+      if (activeElement && activeElement._key) return activeElement._key;
       return null;
     },
   };
