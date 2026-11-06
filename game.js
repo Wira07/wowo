@@ -11,20 +11,20 @@
   // score = poin saat merge menghasilkan level tersebut. `fit` = skala gambar thd collider.
   const LEVELS_BY_MODE = {
     1: [
-      { id: 1, name: 'Orang Kurus',  img: 'assets/lvl1.png', radius: 28,  score: 0,   bubble: '#cfe3f7', fit: 1.10 },
-      { id: 2, name: 'Orang Ke-2',   img: 'assets/lvl2.png', radius: 38,  score: 10,  bubble: '#bcd4f0', fit: 1.10 },
-      { id: 3, name: 'Sawit',        img: 'assets/lvl3.png', radius: 50,  score: 25,  bubble: '#ffd9a8', fit: 1.14 },
-      { id: 4, name: 'Orang Berjas', img: 'assets/lvl4.png', radius: 64,  score: 50,  bubble: '#d3d6de', fit: 1.10 },
-      { id: 5, name: 'Makanan',      img: 'assets/lvl5.png', radius: 80,  score: 100, bubble: '#ffe8a8', fit: 1.10 },
-      { id: 6, name: 'Logo Kopdes',  img: 'assets/lvl6.png', radius: 100, score: 250, bubble: '#ffffff', fit: 1.04 },
+      { id: 1, name: 'Orang Kurus',  img: 'assets/lvl1.png', radius: 28,  score: 0,   bubble: '#b9dcff', rim: '#6cb4ff', fit: 1.10 },
+      { id: 2, name: 'Orang Ke-2',   img: 'assets/lvl2.png', radius: 38,  score: 10,  bubble: '#a8e6cf', rim: '#4cd399', fit: 1.10 },
+      { id: 3, name: 'Sawit',        img: 'assets/lvl3.png', radius: 50,  score: 25,  bubble: '#ffd39b', rim: '#ff9a3c', fit: 1.14 },
+      { id: 4, name: 'Orang Berjas', img: 'assets/lvl4.png', radius: 64,  score: 50,  bubble: '#d8c8ff', rim: '#9c7aff', fit: 1.10 },
+      { id: 5, name: 'Makanan',      img: 'assets/lvl5.png', radius: 80,  score: 100, bubble: '#ffe58f', rim: '#ffc53d', fit: 1.10 },
+      { id: 6, name: 'Logo Kopdes',  img: 'assets/lvl6.png', radius: 100, score: 250, bubble: '#ffffff', rim: '#e3eefc', fit: 1.04 },
     ],
     2: [
-      { id: 1, name: 'Pak Jas Biru',     img: 'assets/m2_lvl1.png', radius: 28,  score: 0,   bubble: '#d2e4fa', fit: 1.12 },
-      { id: 2, name: 'Pak Kemeja Putih', img: 'assets/m2_lvl2.png', radius: 38,  score: 10,  bubble: '#e4f0fb', fit: 1.14 },
-      { id: 3, name: 'Pak Rambut Acak',  img: 'assets/m2_lvl3.png', radius: 50,  score: 25,  bubble: '#cfd9ec', fit: 1.12 },
-      { id: 4, name: 'Ibu Baju Merah',   img: 'assets/m2_lvl4.png', radius: 64,  score: 50,  bubble: '#fbd6d8', fit: 1.12 },
-      { id: 5, name: 'Ibu Kebaya Merah', img: 'assets/m2_lvl5.png', radius: 80,  score: 100, bubble: '#ffe0e2', fit: 1.12 },
-      { id: 6, name: 'Logo Kopdes',      img: 'assets/lvl6.png',    radius: 100, score: 250, bubble: '#ffffff', fit: 1.04 },
+      { id: 1, name: 'Pak Jas Biru',     img: 'assets/m2_lvl1.png', radius: 28,  score: 0,   bubble: '#b9dcff', rim: '#6cb4ff', fit: 1.12 },
+      { id: 2, name: 'Pak Kemeja Putih', img: 'assets/m2_lvl2.png', radius: 38,  score: 10,  bubble: '#a8e6cf', rim: '#4cd399', fit: 1.14 },
+      { id: 3, name: 'Pak Rambut Acak',  img: 'assets/m2_lvl3.png', radius: 50,  score: 25,  bubble: '#d8c8ff', rim: '#9c7aff', fit: 1.12 },
+      { id: 4, name: 'Ibu Baju Merah',   img: 'assets/m2_lvl4.png', radius: 64,  score: 50,  bubble: '#ffc2c7', rim: '#ff6b78', fit: 1.12 },
+      { id: 5, name: 'Ibu Kebaya Merah', img: 'assets/m2_lvl5.png', radius: 80,  score: 100, bubble: '#ffe58f', rim: '#ffc53d', fit: 1.12 },
+      { id: 6, name: 'Logo Kopdes',      img: 'assets/lvl6.png',    radius: 100, score: 250, bubble: '#ffffff', rim: '#e3eefc', fit: 1.04 },
     ],
   };
 
@@ -212,9 +212,6 @@
   function rollLevel() {
     const i = spawnIndex++;
     if (gameMode === 2) {
-      // Di Game 2:
-      // 4 item pertama adalah Level 1 (Pak Jas Biru) agar 2 pasang bisa langsung menyatu -> Level 2 -> Level 3,
-      // diikuti 2 item Level 4 (Ibu Baju Merah) agar bisa langsung menyatu -> Level 5 (Ibu Kebaya Merah).
       if (i < 4) return 1;
       if (i === 4 || i === 5) return 4;
       const r = Math.random();
@@ -297,7 +294,7 @@
         const r = LEVELS[nl - 1].radius;
         fxBurst(mx, my, 8 + nl * 3, nl >= 6);
         fxRing(mx, my, r * 1.5, nl >= 5 ? '#ffd54a' : '#ffffff');
-        fxText(mx, my - r * 0.4, '+' + fmt(pts), 20 + nl * 2, '#ffffff');
+        fxText(mx, my - r * 0.4, '+' + fmt(pts), 20 + nl * 2, '#ffd54a');
         if (nl >= 5) shake = Math.max(shake, nl === 6 ? 12 : 6);
         Sfx.merge(nl);
         if (nl === MAX_LEVEL && !won) {
@@ -581,28 +578,61 @@
     ctx.translate(x, y);
     ctx.scale(scale, scale);
     ctx.globalAlpha = alpha === undefined ? 1 : alpha;
-    // gelembung (sesuai collider)
-    const g = ctx.createRadialGradient(-r * 0.3, -r * 0.35, r * 0.1, 0, 0, r);
-    g.addColorStop(0, '#ffffff'); g.addColorStop(1, L.bubble);
+
+    // Bayangan lembut di belakang gelembung
+    ctx.beginPath();
+    ctx.arc(0, 3, r + 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(30, 60, 100, 0.28)';
+    ctx.fill();
+
+    // Garis luar tipis agar gelembung tegas di latar cerah
+    ctx.beginPath();
+    ctx.arc(0, 0, r + 1.2, 0, Math.PI * 2);
+    ctx.lineWidth = 1.6;
+    ctx.strokeStyle = 'rgba(40, 70, 110, 0.38)';
+    ctx.stroke();
+
+    // Gelembung 3D berwarna (sesuai collider)
+    const g = ctx.createRadialGradient(-r * 0.32, -r * 0.36, r * 0.08, 0, 0, r);
+    g.addColorStop(0, '#ffffff');
+    g.addColorStop(0.55, L.bubble);
+    g.addColorStop(1, L.rim || L.bubble);
     ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
     ctx.fillStyle = g; ctx.fill();
-    ctx.lineWidth = level === MAX_LEVEL ? 4 : 3;
-    ctx.strokeStyle = level === MAX_LEVEL ? RED : 'rgba(255,255,255,.95)';
+
+    // Cincin tepi berlapis
+    ctx.lineWidth = level === MAX_LEVEL ? 4.5 : 3;
+    ctx.strokeStyle = level === MAX_LEVEL ? '#e5303a' : 'rgba(255,255,255,.92)';
     ctx.stroke();
-    ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(120,0,10,.25)';
-    ctx.beginPath(); ctx.arc(0, 0, r + 1.5, 0, Math.PI * 2); ctx.stroke();
-    // sprite
+    ctx.lineWidth = 1.8;
+    ctx.strokeStyle = L.rim || 'rgba(255, 213, 74, .65)';
+    ctx.beginPath(); ctx.arc(0, 0, r - 2.2, 0, Math.PI * 2); ctx.stroke();
+
+    // Sprite karakter / objek
     const img = L.image;
     if (img.complete && img.naturalWidth) {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(0, 0, r - 1.5, 0, Math.PI * 2); ctx.clip();
       const ar = img.naturalWidth / img.naturalHeight;
       const diag = 2 * r * L.fit;
       const h = diag / Math.sqrt(1 + ar * ar), w = h * ar;
       ctx.rotate(tilt);
       ctx.drawImage(img, -w / 2, -h / 2, w, h);
+      ctx.restore();
     } else {
       ctx.fillStyle = RED; ctx.font = 'bold ' + r + 'px sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(level), 0, 0);
     }
+
+    // Kilau kaca (glossy highlight) di sudut kiri atas gelembung
+    ctx.save();
+    ctx.rotate(-0.55);
+    ctx.beginPath();
+    ctx.ellipse(0, -r * 0.68, r * 0.36, r * 0.13, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.38)';
+    ctx.fill();
+    ctx.restore();
+
     ctx.restore();
   }
 
@@ -610,48 +640,287 @@
     ctx.font = '800 ' + size + 'px "Segoe UI", system-ui, sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.lineWidth = Math.max(3, size / 5); ctx.lineJoin = 'round';
-    ctx.strokeStyle = 'rgba(100,0,8,.9)';
+    ctx.strokeStyle = 'rgba(70,0,8,.92)';
     ctx.strokeText(text, x, y);
     ctx.fillStyle = color; ctx.fillText(text, x, y);
   }
 
+  function drawPalm(x, y, scale, flip) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(flip ? -scale : scale, scale);
+    // Batang
+    ctx.fillStyle = '#9a6a3a';
+    ctx.beginPath();
+    ctx.moveTo(-4, 0);
+    ctx.quadraticCurveTo(2, -32, 6, -64);
+    ctx.lineTo(12, -64);
+    ctx.quadraticCurveTo(8, -32, 4, 0);
+    ctx.closePath();
+    ctx.fill();
+    // Pelepah daun sawit
+    const angles = [-2.5, -1.9, -1.3, -0.6, 0.0, 0.55];
+    angles.forEach((a, i) => {
+      ctx.save();
+      ctx.translate(9, -63);
+      ctx.rotate(a);
+      ctx.fillStyle = i % 2 ? '#2f9e4f' : '#3fb860';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(24, -12, 46, 5);
+      ctx.quadraticCurveTo(22, -2, 0, 3);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    });
+    ctx.restore();
+  }
+
+  function drawCloud(cx, cy, s, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 18 * s, 0, Math.PI * 2);
+    ctx.arc(cx + 20 * s, cy - 9 * s, 23 * s, 0, Math.PI * 2);
+    ctx.arc(cx + 45 * s, cy - 2 * s, 19 * s, 0, Math.PI * 2);
+    ctx.arc(cx + 66 * s, cy + 4 * s, 14 * s, 0, Math.PI * 2);
+    ctx.rect(cx, cy, 66 * s, 18 * s);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawKopdesHouse(x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+    // tiang bendera
+    ctx.fillStyle = '#8a8f98';
+    ctx.fillRect(25, -78, 2.5, 46);
+    ctx.fillStyle = '#d7000f'; ctx.fillRect(27.5, -78, 17, 6);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(27.5, -72, 17, 6);
+    // dinding
+    ctx.fillStyle = '#fff7e6';
+    ctx.fillRect(-26, -34, 52, 34);
+    // atap
+    ctx.fillStyle = '#e03a3e';
+    ctx.beginPath();
+    ctx.moveTo(-32, -33); ctx.lineTo(0, -58); ctx.lineTo(32, -33);
+    ctx.closePath(); ctx.fill();
+    // pintu & jendela
+    ctx.fillStyle = '#b9743c'; ctx.fillRect(-6, -20, 12, 20);
+    ctx.fillStyle = '#9ed8ff'; ctx.fillRect(-21, -26, 11, 10); ctx.fillRect(10, -26, 11, 10);
+    ctx.restore();
+  }
+
   function drawBackground() {
-    ctx.fillStyle = '#fff5f3'; ctx.fillRect(0, 0, W, H);
-    const zg = ctx.createLinearGradient(0, 0, 0, LINE_Y);
-    zg.addColorStop(0, '#ffe3e1'); zg.addColorStop(1, '#fff0ee');
-    ctx.fillStyle = zg; ctx.fillRect(LEFT, 0, RIGHT - LEFT, LINE_Y);
-    ctx.strokeStyle = 'rgba(215,0,15,.05)'; ctx.lineWidth = 2;
-    for (let y = LINE_Y + 30; y < FLOOR_Y; y += 60) { ctx.beginPath(); ctx.moveTo(LEFT, y); ctx.lineTo(RIGHT, y); ctx.stroke(); }
+    const AW = RIGHT - LEFT;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(LEFT, 0, AW, FLOOR_Y);
+    ctx.clip();
+
+    // 1. Langit cerah: biru muda -> aqua -> krem hangat di cakrawala
+    const sky = ctx.createLinearGradient(0, 0, 0, FLOOR_Y);
+    sky.addColorStop(0, '#6cc6ff');
+    sky.addColorStop(0.38, '#a9e2ff');
+    sky.addColorStop(0.72, '#e4f7ff');
+    sky.addColorStop(1, '#fff3cf');
+    ctx.fillStyle = sky;
+    ctx.fillRect(LEFT, 0, AW, FLOOR_Y);
+
+    // 2. Matahari + sinar lembut di kanan atas
+    const sunX = 392, sunY = 86;
+    const halo = ctx.createRadialGradient(sunX, sunY, 8, sunX, sunY, 190);
+    halo.addColorStop(0, 'rgba(255, 244, 170, 0.95)');
+    halo.addColorStop(0.35, 'rgba(255, 236, 140, 0.35)');
+    halo.addColorStop(1, 'rgba(255, 236, 140, 0)');
+    ctx.fillStyle = halo;
+    ctx.fillRect(LEFT, 0, AW, FLOOR_Y);
+    for (let i = 0; i < 14; i++) {
+      const a0 = (i / 14) * Math.PI * 2 + nowSec * 0.05;
+      ctx.beginPath();
+      ctx.moveTo(sunX, sunY);
+      ctx.lineTo(sunX + Math.cos(a0) * 700, sunY + Math.sin(a0) * 700);
+      ctx.lineTo(sunX + Math.cos(a0 + 0.08) * 700, sunY + Math.sin(a0 + 0.08) * 700);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.13)';
+      ctx.fill();
+    }
+    ctx.beginPath(); ctx.arc(sunX, sunY, 31, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff7b8'; ctx.fill();
+    ctx.beginPath(); ctx.arc(sunX, sunY, 24, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffd84a'; ctx.fill();
+
+    // 3. Pola ornamen batik tipis (putih transparan) agar tidak polos
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.lineWidth = 1.3;
+    const step = 56;
+    for (let y = 196; y < FLOOR_Y - 130; y += step) {
+      for (let x = LEFT + 28 + (((y - 196) / step) % 2 ? 28 : 0); x < RIGHT; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, y - 14); ctx.lineTo(x + 14, y); ctx.lineTo(x, y + 14); ctx.lineTo(x - 14, y);
+        ctx.closePath(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(x, y, 3.2, 0, Math.PI * 2); ctx.stroke();
+      }
+    }
+
+    // 4. Awan melayang pelan
+    const span = AW + 220;
+    const cl = [
+      [30, 70, 1.0, 0.95, 9], [160, 150, 0.8, 0.85, 6], [250, 40, 0.7, 0.8, 7],
+      [90, 310, 0.9, 0.7, 5], [300, 420, 1.05, 0.65, 4], [20, 520, 0.75, 0.6, 6],
+    ];
+    cl.forEach(([bx, by, s, al, sp]) => {
+      const cx = LEFT - 110 + ((bx + nowSec * sp) % span);
+      drawCloud(cx, by, s, al);
+    });
+
+    // 5. Burung kecil terbang
+    ctx.strokeStyle = 'rgba(60, 90, 130, 0.55)';
+    ctx.lineWidth = 1.8;
+    ctx.lineCap = 'round';
+    [[130, 112, 1], [158, 96, 0.8], [96, 132, 0.7]].forEach(([bx, by, s], i) => {
+      const flap = Math.sin(nowSec * 6 + i * 1.7) * 3 * s;
+      ctx.beginPath();
+      ctx.moveTo(bx - 9 * s, by - flap);
+      ctx.quadraticCurveTo(bx - 4 * s, by - 6 * s, bx, by);
+      ctx.quadraticCurveTo(bx + 4 * s, by - 6 * s, bx + 9 * s, by - flap);
+      ctx.stroke();
+    });
+
+    // 6. Perbukitan desa berlapis (biru kehijauan -> hijau segar)
+    ctx.fillStyle = '#b6e3d0';
+    ctx.beginPath();
+    ctx.moveTo(LEFT, FLOOR_Y - 120);
+    ctx.quadraticCurveTo(110, FLOOR_Y - 210, 230, FLOOR_Y - 130);
+    ctx.quadraticCurveTo(340, FLOOR_Y - 205, RIGHT, FLOOR_Y - 118);
+    ctx.lineTo(RIGHT, FLOOR_Y); ctx.lineTo(LEFT, FLOOR_Y); ctx.closePath(); ctx.fill();
+
+    const h2 = ctx.createLinearGradient(0, FLOOR_Y - 150, 0, FLOOR_Y);
+    h2.addColorStop(0, '#8fdc8f');
+    h2.addColorStop(1, '#5cc06a');
+    ctx.fillStyle = h2;
+    ctx.beginPath();
+    ctx.moveTo(LEFT, FLOOR_Y - 70);
+    ctx.quadraticCurveTo(140, FLOOR_Y - 150, 270, FLOOR_Y - 78);
+    ctx.quadraticCurveTo(380, FLOOR_Y - 130, RIGHT, FLOOR_Y - 62);
+    ctx.lineTo(RIGHT, FLOOR_Y); ctx.lineTo(LEFT, FLOOR_Y); ctx.closePath(); ctx.fill();
+
+    // pohon sawit di bukit tengah
+    drawPalm(396, FLOOR_Y - 70, 0.78, false);
+    drawPalm(432, FLOOR_Y - 62, 0.6, true);
+    drawPalm(78, FLOOR_Y - 76, 0.66, false);
+
+    // sawah bertingkat tipis di bukit tengah
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+    ctx.lineWidth = 2;
+    for (let k = 0; k < 3; k++) {
+      ctx.beginPath();
+      ctx.moveTo(LEFT + 150, FLOOR_Y - 62 - k * 12);
+      ctx.quadraticCurveTo(260, FLOOR_Y - 98 - k * 12, RIGHT - 70, FLOOR_Y - 64 - k * 10);
+      ctx.stroke();
+    }
+
+    // bukit depan + rumput
+    const h3 = ctx.createLinearGradient(0, FLOOR_Y - 60, 0, FLOOR_Y);
+    h3.addColorStop(0, '#4fbf5f');
+    h3.addColorStop(1, '#2f9e4f');
+    ctx.fillStyle = h3;
+    ctx.beginPath();
+    ctx.moveTo(LEFT, FLOOR_Y - 26);
+    ctx.quadraticCurveTo(120, FLOOR_Y - 64, 235, FLOOR_Y - 32);
+    ctx.quadraticCurveTo(350, FLOOR_Y - 62, RIGHT, FLOOR_Y - 24);
+    ctx.lineTo(RIGHT, FLOOR_Y); ctx.lineTo(LEFT, FLOOR_Y); ctx.closePath(); ctx.fill();
+
+    // rumah KOPDES kecil di bukit depan
+    drawKopdesHouse(112, FLOOR_Y - 32);
+
+    // bunga kecil warna-warni
+    const flowers = [[48, 22, '#ff8fb1'], [190, 12, '#ffe066'], [215, 18, '#ffffff'], [300, 14, '#ff8fb1'], [345, 22, '#ffe066'], [440, 16, '#ffffff']];
+    flowers.forEach(([fx, fy, fc]) => {
+      ctx.fillStyle = fc;
+      ctx.beginPath(); ctx.arc(fx, FLOOR_Y - fy, 3, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // 7. Kilau lembut di bagian atas arena
+    const sheen = ctx.createLinearGradient(0, 0, 0, 140);
+    sheen.addColorStop(0, 'rgba(255, 255, 255, 0.28)');
+    sheen.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = sheen;
+    ctx.fillRect(LEFT, 0, AW, 140);
+
+    // 8. Umbul-umbul Merah-Putih-Emas di bagian atas
+    const flagW = 28, flagH = 15;
+    for (let x = LEFT; x < RIGHT; x += flagW) {
+      const idx = Math.floor((x - LEFT) / flagW);
+      ctx.beginPath();
+      ctx.moveTo(x, 0); ctx.lineTo(x + flagW, 0); ctx.lineTo(x + flagW / 2, flagH);
+      ctx.closePath();
+      ctx.fillStyle = idx % 3 === 0 ? '#e5303a' : (idx % 3 === 1 ? '#ffffff' : '#ffd54a');
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(90, 60, 30, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // 9. Dinding kiri-kanan: krem-emas hangat
     const wg = ctx.createLinearGradient(0, 0, WALL, 0);
-    wg.addColorStop(0, '#9b000a'); wg.addColorStop(1, '#e2101d');
+    wg.addColorStop(0, '#d8b46a');
+    wg.addColorStop(0.55, '#fff0c8');
+    wg.addColorStop(1, '#ffffff');
     ctx.fillStyle = wg; ctx.fillRect(0, 0, WALL, H);
     const wg2 = ctx.createLinearGradient(RIGHT, 0, W, 0);
-    wg2.addColorStop(0, '#e2101d'); wg2.addColorStop(1, '#9b000a');
+    wg2.addColorStop(0, '#ffffff');
+    wg2.addColorStop(0.45, '#fff0c8');
+    wg2.addColorStop(1, '#d8b46a');
     ctx.fillStyle = wg2; ctx.fillRect(RIGHT, 0, WALL, H);
+    ctx.fillStyle = '#ffc93c';
+    ctx.fillRect(WALL - 3, 0, 3, FLOOR_Y);
+    ctx.fillRect(RIGHT, 0, 3, FLOOR_Y);
+
+    // 10. Lantai: tanah-kayu hangat dengan tepi rumput
     const fg = ctx.createLinearGradient(0, FLOOR_Y, 0, H);
-    fg.addColorStop(0, '#e2101d'); fg.addColorStop(1, '#9b000a');
+    fg.addColorStop(0, '#c98b4a');
+    fg.addColorStop(0.3, '#a8672f');
+    fg.addColorStop(1, '#6e3f1a');
     ctx.fillStyle = fg; ctx.fillRect(0, FLOOR_Y, W, H - FLOOR_Y);
-    ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(0, FLOOR_Y, W, 3);
+    ctx.fillStyle = '#4fbf5f';
+    ctx.fillRect(WALL - 3, FLOOR_Y - 1, RIGHT - LEFT + 6, 6);
+    ctx.fillStyle = '#7fe08a';
+    ctx.fillRect(WALL - 3, FLOOR_Y - 1, RIGHT - LEFT + 6, 2);
   }
 
   function drawLine() {
     const danger = dangerTime > 0;
     const pulse = danger ? 0.5 + 0.5 * Math.sin(nowSec * 14) : 0;
     ctx.save();
-    ctx.setLineDash([14, 10]);
-    ctx.lineWidth = danger ? 4 : 3;
-    ctx.strokeStyle = danger ? 'rgba(215,0,15,' + (0.5 + 0.5 * pulse) + ')' : 'rgba(215,0,15,.55)';
-    ctx.beginPath(); ctx.moveTo(LEFT, LINE_Y); ctx.lineTo(RIGHT, LINE_Y); ctx.stroke();
+    ctx.setLineDash([12, 8]);
+    ctx.lineWidth = danger ? 4 : 2.5;
+    ctx.strokeStyle = danger ? 'rgba(230, 40, 50, ' + (0.65 + 0.35 * pulse) + ')' : 'rgba(224, 96, 40, 0.8)';
+    ctx.beginPath(); ctx.moveTo(LEFT + 2, LINE_Y); ctx.lineTo(RIGHT - 2, LINE_Y); ctx.stroke();
     ctx.restore();
-    ctx.font = '700 12px "Segoe UI", system-ui, sans-serif';
-    ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-    ctx.fillStyle = 'rgba(215,0,15,.8)';
-    ctx.fillText('BATAS', LEFT + 8, LINE_Y - 4);
+
+    // Label pill BATAS
+    ctx.save();
+    ctx.fillStyle = danger ? '#D7000F' : 'rgba(40, 4, 10, 0.75)';
+    ctx.strokeStyle = 'rgba(255, 213, 74, 0.75)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(LEFT + 6, LINE_Y - 20, 52, 16, 8) : ctx.rect(LEFT + 6, LINE_Y - 20, 52, 16);
+    ctx.fill(); ctx.stroke();
+    ctx.font = '800 10px "Segoe UI", system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffd54a';
+    ctx.fillText('BATAS', LEFT + 32, LINE_Y - 12);
+    ctx.restore();
+
     if (danger) {
       ctx.textAlign = 'right';
-      ctx.fillStyle = RED;
-      ctx.font = '800 16px "Segoe UI", system-ui, sans-serif';
-      ctx.fillText('BAHAYA! ' + Math.max(0, OVER_SECONDS - dangerTime).toFixed(1) + ' dtk', RIGHT - 8, LINE_Y - 4);
+      ctx.fillStyle = '#ffd54a';
+      ctx.font = '800 15px "Segoe UI", system-ui, sans-serif';
+      ctx.fillText('BAHAYA! ' + Math.max(0, OVER_SECONDS - dangerTime).toFixed(1) + ' dtk', RIGHT - 8, LINE_Y - 5);
     }
   }
 
@@ -663,13 +932,13 @@
     drawBackground();
     drawLine();
 
-    // item yang akan dijatuhkan + garis bantu
+    // item yang akan dijatuhkan + garis bantu bercahaya
     if (held && (state === 'playing' || state === 'paused')) {
       const L = LEVELS[held.level - 1];
       const x = clampAim(aimX);
       const t = clamp((nowSec - held.born) / 0.25, 0, 1);
       ctx.save();
-      ctx.setLineDash([4, 9]); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(215,0,15,.3)';
+      ctx.setLineDash([5, 8]); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(40, 90, 150, 0.45)';
       ctx.beginPath(); ctx.moveTo(x, DROP_Y + L.radius); ctx.lineTo(x, FLOOR_Y); ctx.stroke();
       ctx.restore();
       drawItem(held.level, x, DROP_Y, 0.4 + 0.6 * easeOutBack(t), 0, 1);

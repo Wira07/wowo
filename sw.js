@@ -1,9 +1,9 @@
-const CACHE = 'kopdes-merge-v4';
+const CACHE = 'kopdes-merge-v8';
 const ASSETS = [
   './', 'index.html', 'style.css', 'game.js', 'audio.js', 'vendor/matter.min.js', 'manifest.webmanifest',
   'assets/lvl1.png', 'assets/lvl2.png', 'assets/lvl3.png', 'assets/lvl4.png', 'assets/lvl5.png', 'assets/lvl6.png',
   'assets/m2_lvl1.png', 'assets/m2_lvl2.png', 'assets/m2_lvl3.png', 'assets/m2_lvl4.png', 'assets/m2_lvl5.png',
-  'assets/merge_lvl1.wav', 'assets/merge_lvl2.wav', 'assets/merge_lvl3.wav',
+  'assets/merge_lvl1.wav', 'assets/merge_lvl2.wav', 'assets/merge_lvl3_hutang.wav', 'assets/merge_lvl4_mbg.wav',
   'assets/m2_merge1.wav', 'assets/m2_merge2.wav', 'assets/m2_merge3.wav',
   'assets/icon-192.png', 'assets/icon-512.png',
 ];

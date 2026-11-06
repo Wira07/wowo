@@ -7,9 +7,10 @@ const Sfx = (() => {
 
   // Pemetaan mode & level hasil merge ke file audio:
   // Mode 1:
-  //   m1_2: Level 1 + Level 1 -> Level 2 (Orang Kurus bertemu Orang Kurus)
-  //   m1_3: Level 2 + Level 2 -> Level 3 (Orang Ke-2 / Gendut bertemu Orang Ke-2)
-  //   m1_4: Level 3 + Level 3 -> Level 4 (Sawit bertemu Sawit)
+  //   m1_2: Level 1 + Level 1 -> Level 2 (Orang Kurus bertemu Orang Kurus -> Orang Ke-2)
+  //   m1_3: Level 2 + Level 2 -> Level 3 (Orang Ke-2 bertemu Orang Ke-2 -> Sawit)
+  //   m1_4: Level 3 + Level 3 -> Level 4 (Sawit bertemu Sawit -> Orang Berjas bawa sawit, SnapTik 7662747012235889938)
+  //   m1_5: Level 4 + Level 4 -> Level 5 (Orang Berjas bertemu Orang Berjas -> Makanan MBG, SnapTik 7643377554887331093)
   // Mode 2:
   //   m2_2: Level 1 + Level 1 -> Level 2 (Pak Jas Biru bertemu Pak Jas Biru -> Pak Kemeja Putih, SnapTik 7153243234121174298)
   //   m2_3: Level 2 + Level 2 -> Level 3 (Pak Kemeja Putih bertemu Pak Kemeja Putih -> Pak Rambut Acak, SnapTik 7440518047376379191)
@@ -18,7 +19,8 @@ const Sfx = (() => {
   const VOICE_FILES = {
     m1_2: 'assets/merge_lvl1.wav',
     m1_3: 'assets/merge_lvl2.wav',
-    m1_4: 'assets/merge_lvl3.wav',
+    m1_4: 'assets/merge_lvl3_hutang.wav',
+    m1_5: 'assets/merge_lvl4_mbg.wav',
     m2_2: 'assets/m2_merge1.wav',
     m2_3: 'assets/m2_merge2.wav',
     m2_4: 'assets/m2_merge3.wav',
@@ -30,7 +32,7 @@ const Sfx = (() => {
   let activeElement = null;
   let duckTimer = null;
 
-  // Preload HTMLAudioElement hanya saat dibuka langsung via file:// (di mana fetch diblokir CORS)
+  // Preload HTMLAudioElement saat dibuka langsung via file:// (di mana fetch diblokir CORS)
   if (!/^https?:$/.test(location.protocol)) {
     Object.keys(VOICE_FILES).forEach((k) => {
       try {
@@ -97,7 +99,7 @@ const Sfx = (() => {
   function duckMusic(seconds) {
     if (!ctx || !musicBus) return;
     clearTimeout(duckTimer);
-    musicBus.gain.setTargetAtTime(0.035, ctx.currentTime, 0.03);
+    musicBus.gain.setTargetAtTime(0.03, ctx.currentTime, 0.03);
     duckTimer = setTimeout(() => {
       if (ctx && musicBus) musicBus.gain.setTargetAtTime(0.16, ctx.currentTime, 0.15);
     }, Math.max(200, seconds * 1000));
@@ -155,7 +157,8 @@ const Sfx = (() => {
         el._level = Number(level);
         el._key = key;
         activeElement = el;
-        duckMusic(el.duration || 3.5);
+        const dur = Number.isFinite(el.duration) && el.duration > 0 ? el.duration : 12;
+        duckMusic(dur);
         el.onended = () => {
           if (activeElement === el) {
             activeElement = null;
@@ -227,7 +230,7 @@ const Sfx = (() => {
   function merge(level) {
     // Jika level hasil merge memiliki klip suara, putar klip suara tersebut
     if (playVoice(level)) return;
-    // Selain itu, gunakan nada naik sesuai level hasil merge (5..6)
+    // Selain itu, gunakan nada naik sesuai level hasil merge (6)
     const base = Math.min(level, 7) + 1;
     tone(SCALE[base], { type: 'triangle', dur: 0.16, vol: 0.45 });
     tone(SCALE[base + 2], { type: 'triangle', dur: 0.22, vol: 0.4, delay: 0.07 });

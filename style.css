@@ -6,7 +6,7 @@
   --ink: #2b0a0d;
   --gold: #ffd54a;
   --hud-h: 64px;
-  --evo-h: 46px;
+  --evo-h: 48px;
   --hh: calc(var(--hud-h) + var(--evo-h));
   /* lebar area game: menyesuaikan tinggi layar (rasio 2:3) */
   --w: min(100vw, calc((100vh - var(--hh)) * 2 / 3));
@@ -20,7 +20,10 @@ html, body {
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
-  background: radial-gradient(ellipse at 50% 30%, #b3000d 0%, #5c0006 70%, #330003 100%);
+  background:
+    radial-gradient(circle at 15% 18%, rgba(255, 255, 255, .55) 0%, transparent 38%),
+    radial-gradient(circle at 85% 80%, rgba(255, 244, 190, .6) 0%, transparent 42%),
+    linear-gradient(160deg, #7fd0ff 0%, #b9ecff 45%, #ffeec4 100%);
   color: var(--white);
   font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-user-select: none;
@@ -39,6 +42,7 @@ img { -webkit-user-drag: none; user-drag: none; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 14px 30px rgba(20, 70, 120, .35));
 }
 
 #hud, #evo, #board { width: var(--w); }
@@ -49,13 +53,26 @@ img { -webkit-user-drag: none; user-drag: none; }
   align-items: center;
   gap: 8px;
   padding: 0 10px;
-  background: linear-gradient(#e2101d, var(--red));
-  border-radius: 14px 14px 0 0;
+  background: linear-gradient(180deg, #ff2a36 0%, #d7000f 55%, #9b000a 100%);
+  border: 2px solid rgba(255, 213, 74, .75);
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .35);
 }
 
-.stat { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.1; }
-.lbl { font-size: 10px; letter-spacing: .08em; opacity: .85; font-weight: 600; }
-.val { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; }
+.stat {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  background: rgba(55, 0, 6, .36);
+  border: 1px solid rgba(255, 213, 74, .35);
+  border-radius: 10px;
+  padding: 4px 8px;
+}
+.lbl { font-size: 9px; letter-spacing: .1em; color: #ffe596; font-weight: 700; }
+.val { font-size: 20px; font-weight: 900; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 0 rgba(0, 0, 0, .35); }
 .val.bump { animation: bump .25s ease-out; }
 @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.25); color: var(--gold); } 100% { transform: scale(1); } }
 
@@ -63,20 +80,23 @@ img { -webkit-user-drag: none; user-drag: none; }
 .next .lbl { font-size: 8px; }
 .nextbox {
   width: 44px; height: 38px;
-  background: rgba(255, 255, 255, .95);
+  background: radial-gradient(circle at 35% 30%, #ffffff 0%, #ffe6b3 100%);
+  border: 2px solid var(--gold);
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
 }
-.nextbox img { max-width: 36px; max-height: 32px; object-fit: contain; }
+.nextbox img { max-width: 34px; max-height: 30px; object-fit: contain; }
 
 .icon-btn {
-  width: 44px; height: 44px;
+  width: 42px; height: 42px;
   flex: none;
-  border: 0; border-radius: 50%;
-  background: rgba(255, 255, 255, .95);
-  color: var(--red);
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fffdf7 0%, #ffe4a3 100%);
+  color: var(--red-dark);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, .3);
 }
 .icon-btn:active { transform: translateY(1px); }
 .icon-btn svg { width: 22px; height: 22px; fill: currentColor; }
@@ -85,29 +105,41 @@ img { -webkit-user-drag: none; user-drag: none; }
   height: var(--evo-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 8px;
-  background: #fff;
-  color: var(--red);
+  background: linear-gradient(180deg, #fffdf6 0%, #fff0c9 100%);
+  border-left: 2px solid rgba(255, 213, 74, .75);
+  border-right: 2px solid rgba(255, 213, 74, .75);
+  border-top: 1.5px solid rgba(255, 213, 74, .55);
+  border-bottom: 2px solid #ffd54a;
+  color: var(--gold);
 }
 .evo-item {
   flex: none;
   width: 38px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 10px;
-  background: #fdeaea;
+  background: radial-gradient(circle at 35% 30%, #fff7df 0%, #f7c97e 100%);
+  border: 1.5px solid #ffd54a;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .35);
   position: relative;
 }
+.evo-item.locked {
+  background: rgba(120, 90, 40, .1);
+  border-color: rgba(200, 150, 40, .35);
+}
 .evo-item img { max-width: 32px; max-height: 32px; object-fit: contain; transition: filter .3s; }
-.evo-item.locked img { filter: brightness(0) opacity(.28); }
+.evo-item.locked img { filter: brightness(0) opacity(.22); }
 .evo-item.unlock { animation: unlock .6s ease-out; }
-.evo-item.current { box-shadow: 0 0 0 2px var(--red); }
+.evo-item.current { box-shadow: 0 0 0 2px var(--gold); }
 @keyframes unlock { 0% { transform: scale(.6); } 60% { transform: scale(1.35); } 100% { transform: scale(1); } }
-.evo-arrow { font-weight: 800; opacity: .6; font-size: 16px; }
+.evo-arrow { font-weight: 900; color: #d98a1c; opacity: .85; font-size: 16px; }
 
 #board {
   position: relative;
   aspect-ratio: 2 / 3;
-  background: #fff5f3;
-  border-radius: 0 0 14px 14px;
+  background: #a9e2ff;
+  border: 2px solid rgba(255, 213, 74, .75);
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
   overflow: hidden;
 }
 #game { display: block; width: 100%; height: 100%; touch-action: none; cursor: pointer; }
@@ -116,16 +148,18 @@ img { -webkit-user-drag: none; user-drag: none; }
   position: absolute; left: 50%; top: 22%;
   transform: translateX(-50%);
   padding: 8px 14px;
-  background: rgba(43, 10, 13, .85);
-  color: #fff;
+  background: rgba(43, 4, 10, .9);
+  border: 1.5px solid rgba(255, 213, 74, .7);
+  color: #fff8e1;
   border-radius: 999px;
-  font-size: 13px; font-weight: 600;
+  font-size: 13px; font-weight: 700;
   pointer-events: none;
   opacity: 0; transition: opacity .3s;
   white-space: nowrap;
   max-width: 94%;
   overflow: hidden;
   text-overflow: ellipsis;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .4);
 }
 #hint.show { opacity: 1; }
 
